@@ -11,7 +11,7 @@
                 <!--
                 <a type="action" name="%(account_bank_mutasi.action_mutasi_list)d">Mutasi Bank</a>
                 -->
-                <a type="object" name="open_action" context="{'action_name': 'action_mutasi_list'}" groups="base.group_no_one">Mutasi Bank</a>
+                <a type="object" name="open_action" context="{'action_name': 'action_mutasi_list'}">Mutasi Bank</a>
               </t>
             </div>
         </xpath>      
