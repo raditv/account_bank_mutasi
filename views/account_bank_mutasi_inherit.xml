@@ -1,0 +1,30 @@
+<odoo>
+  <data>
+    <record id="view_account_journal_form_credential" model="ir.ui.view">
+            <field name="name">account.journal.form.credential</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form" />
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+              <field name='bank_id' position="after">
+                <field name="bank_acc_ebanking"/>
+                <field name="bank_acc_user" attrs="{'invisible':[('bank_acc_ebanking', '!=', True)]}" class="oe_edit_only"/>
+                <field name="bank_acc_password" attrs="{'invisible':[('bank_acc_ebanking', '!=', True)]}" password="True" class="oe_edit_only"/>
+              </field>
+            </field>
+        </record>
+        <record id="view_account_bank_journal_form_credential" model="ir.ui.view">
+            <field name="name">account.bank.journal.form.credential</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_bank_journal_form" />
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+              <field name='bank_id' position="after">
+                <field name="bank_acc_ebanking"/>
+                <field name="bank_acc_user" attrs="{'invisible':[('bank_acc_ebanking', '!=', True)]}" class="oe_edit_only"/>
+                <field name="bank_acc_password" attrs="{'invisible':[('bank_acc_ebanking', '!=', True)]}" password="True" class="oe_edit_only"/>
+              </field>
+            </field>
+        </record>
+  </data>
+</odoo>

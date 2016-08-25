@@ -1,0 +1,10 @@
+<openerp>
+  <data noupdate="1">
+    <record model="ir.sequence" id="seq_account_bank_mutasi">
+      <field name="name">account_bank_mutasi</field>
+      <field name="code">account.bank.mutasi</field>
+      <field name="prefix">MUT/%(range_year)s/</field>
+      <field name="padding">3</field>
+    </record>
+  </data>
+</openerp>

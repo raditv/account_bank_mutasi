@@ -1,0 +1,21 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="account_bank_mutasi_dashboard_kanban_view">
+      <field name="name">account.bank.mutasi.dashboard.kanban</field>
+      <field name="model">account.journal</field>
+      <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/>
+      <field name="arch" type="xml">
+        <xpath expr="//div[contains(@class, 'col-xs-4 o_kanban_card_manage_section o_kanban_manage_view')]" position="inside">
+            <div>
+              <t t-if="journal_type == 'bank'">
+                <!--
+                <a type="action" name="%(account_bank_mutasi.action_mutasi_list)d">Mutasi Bank</a>
+                -->
+                <a type="object" name="open_action" context="{'action_name': 'action_mutasi_list'}" groups="base.group_no_one">Mutasi Bank</a>
+              </t>
+            </div>
+        </xpath>      
+      </field>
+    </record>
+  </data>
+</odoo>

@@ -1,0 +1,98 @@
+<odoo>
+  <data>
+    <!-- tree view -->
+    <record id="mutasi_bank_list_record" model="ir.ui.view">
+      <field name="name">account.bank.mutasi_list</field>
+      <field name="model">account.bank.mutasi</field>
+      <field name="arch" type="xml">
+        <tree string="Mutasi Bank">
+          <field name="journal_id" />
+          <field name="name" />
+          <field name="date_start" />
+          <field name="date_end" />
+          <field name="debit" />
+          <field name="credit" />
+        </tree>
+      </field>
+    </record>
+    <!-- end tree view -->
+    <!-- form view -->
+    <record id="mutasi_bank_form_record" model="ir.ui.view">
+      <field name="name">account.bank.mutasi_form</field>
+      <field name="model">account.bank.mutasi</field>
+      <field name="arch" type="xml">
+        <form string="Mutasi Form">
+          <sheet>
+            <div class="oe_title">
+              <label for="name" class="oe_edit_only" string="Reference" />
+              <h1>
+                <field name="name" readonly="True"/>
+              </h1>
+            </div>
+            <group>
+              <group>
+                <field name="journal_id" />
+                <field name="date_start" />
+                <field name="date_end" />
+              </group>
+              <group>
+                <field name="debit" />
+                <field name="credit" />
+              </group>
+            </group>
+            <notebook>
+              <page string="Mutasi Data">
+                <separator string="Data Transaksi"/>
+                <group>
+                  <div class="oe_right oe_button_box">
+                    <button string="Import from Internet Banking" type="object" name="import_from_ebanking" />
+                  </div>
+                </group>
+                <field name="transaksi_ids">
+                  <tree string="Transaksi">
+                    <field name="name" />
+                    <field name="date" />
+                    <field name="debit" />
+                    <field name="credit" />
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    <!-- end form view -->
+    <!-- search view -->
+    <record id="view_mutasi_bank_search" model="ir.ui.view">
+      <field name="name">account.bank.mutasi.search</field>
+      <field name="model">account.bank.mutasi</field>
+      <field name="arch" type="xml">
+      <search string="Search Mutasi">
+        <field name="name" string="Mutasi Bank"/>
+        <field name="journal_id" domain="[('type', '=', 'bank')]" />
+      </search>
+      </field>
+    </record>
+    <!-- end search view -->
+    <!-- action window -->
+      <record id="action_mutasi_list" model="ir.actions.act_window">
+        <field name="name">Mutasi Rekening</field>
+        <field name="res_model">account.bank.mutasi</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('journal_id.type', '=', 'bank')]</field>
+        <field name="context">{'journal_type':'bank'}</field>
+        <field name="search_view_id" ref="view_mutasi_bank_search"/>
+        <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to import a bank mutasi.
+              </p>
+              <p>
+                Mutasi bank Indonesia melalu fasilitas internet banking
+                yang sudah disediakan oleh masing-masing bank yang disupport
+              </p>
+            </field>
+      </record>
+    <!-- end action -->
+  </data>
+</odoo>
