@@ -231,8 +231,8 @@ class MutasiBank(models.Model):
 	name 		  = fields.Char(string="Reference")
 	date_start	  = fields.Date(string="Start Date")
 	date_end	  = fields.Date(string="To Date")
-	debit 		  = fields.Float(string="Total Debit", compute="_total_debit")
-	credit 		  = fields.Float(string="Total Credit", compute="_total_credit")
+	debit 		  = fields.Float(string="Total Debit", compute="_total_balance")
+	credit 		  = fields.Float(string="Total Credit", compute="_total_balance")
 	transaksi_ids = fields.One2many("account.bank.mutasi.transaksi","mutasi_id","Transaksi",ondelete="cascade")
 
 
@@ -245,21 +245,15 @@ class MutasiBank(models.Model):
 		return super(MutasiBank, self).create(vals)
 
 	@api.one
-	@api.depends('transaksi_ids', 'transaksi_ids.debit')
-	def _total_debit(self):
+	@api.depends('transaksi_ids')
+	def _total_balance(self):
 		if self.transaksi_ids:
 			self.debit = sum(
 				[nilai.debit for nilai in self.transaksi_ids])
-		else:
-			self.debit = 0.0
-
-	@api.one
-	@api.depends('transaksi_ids', 'transaksi_ids.credit')
-	def _total_credit(self):
-		if self.transaksi_ids:
 			self.credit = sum(
 				[nilai.credit for nilai in self.transaksi_ids])
 		else:
+			self.debit = 0.0
 			self.credit = 0.0
 
 	@api.multi
