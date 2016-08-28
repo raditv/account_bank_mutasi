@@ -184,43 +184,21 @@ class AccountJournal(models.Model):
 	@api.multi
 	def open_action(self):
 		action_name = self._context.get('action_name', False)
-		if not action_name:
-			if self.type == 'bank':
-				action_name = 'action_bank_statement_tree'
-			elif self.type == 'cash':
-				action_name = 'action_view_bank_statement_tree'
-			elif self.type == 'sale':
-				action_name = 'action_invoice_tree1'
-			elif self.type == 'purchase':
-				action_name = 'action_invoice_tree2'
-			else:
-				action_name = 'action_move_journal_line'
-
-		_journal_invoice_type_map = {
-			('sale', None): 'out_invoice',
-			('purchase', None): 'in_invoice',
-			('sale', 'refund'): 'out_refund',
-			('purchase', 'refund'): 'in_refund',
-			('bank', None): 'bank',
-			('cash', None): 'cash',
-			('general', None): 'general',
-		}
-		invoice_type = _journal_invoice_type_map[(self.type, self._context.get('invoice_type'))]
-		ctx = self._context.copy()
-		ctx.pop('group_by', None)
-		ctx.update({
-			'journal_type': self.type,
-			'default_journal_id': self.id,
-			'search_default_journal_id': self.id,
-		})
-		ir_model_obj = self.pool['ir.model.data']
 		if action_name == 'action_mutasi_list':
+			ctx = self._context.copy()
+			ctx.pop('group_by', None)
+			ctx.update({
+				'journal_type': self.type,
+				'default_journal_id': self.id,
+				'search_default_journal_id': self.id,
+				})
+			ir_model_obj = self.pool['ir.model.data']
 			model, action_id = ir_model_obj.get_object_reference(self._cr, self._uid, 'account_bank_mutasi', action_name)
+			action = self.pool[model].read(self._cr, self._uid, action_id, context=self._context)
+			action['context'] = ctx
+			action['domain'] = self._context.get('use_domain', [])
 		else:
-			model, action_id = ir_model_obj.get_object_reference(self._cr, self._uid, 'account', action_name)
-		action = self.pool[model].read(self._cr, self._uid, action_id, context=self._context)
-		action['context'] = ctx
-		action['domain'] = self._context.get('use_domain', [])
+			action = super(AccountJournal,self).open_action()
 		return action
 
 
