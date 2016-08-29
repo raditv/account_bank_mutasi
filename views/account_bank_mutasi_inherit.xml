@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
               <field name='bank_id' position="after">
                 <field name="bank_acc_ebanking"/>
-                <field name="bank_acc_user" attrs="{'invisible':[('bank_acc_ebanking', '!=', True)]}" class="oe_edit_only"/>
+                <field name="bank_acc_user" attrs="{'invisible':[('bank_acc_ebanking', '!=', True)]}" password="True" class="oe_edit_only"/>
                 <field name="bank_acc_password" attrs="{'invisible':[('bank_acc_ebanking', '!=', True)]}" password="True" class="oe_edit_only"/>
               </field>
             </field>
@@ -21,7 +21,7 @@
             <field name="arch" type="xml">
               <field name='bank_id' position="after">
                 <field name="bank_acc_ebanking"/>
-                <field name="bank_acc_user" attrs="{'invisible':[('bank_acc_ebanking', '!=', True)]}" class="oe_edit_only"/>
+                <field name="bank_acc_user" attrs="{'invisible':[('bank_acc_ebanking', '!=', True)]}" password="True" class="oe_edit_only"/>
                 <field name="bank_acc_password" attrs="{'invisible':[('bank_acc_ebanking', '!=', True)]}" password="True" class="oe_edit_only"/>
               </field>
             </field>

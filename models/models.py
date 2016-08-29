@@ -167,9 +167,31 @@ class MutasiBrowser(Browser):
 class ResPartnerBank(models.Model):
 	_inherit = "res.partner.bank"
 
-	bank_user 		= fields.Char(string='E-Banking User')
-	bank_password 	= fields.Char(string='E-Banking Password')
-	bank_ebanking	= fields.Boolean(string='E-Banking Active')
+	bank_user = fields.Char(string='E-Banking User')
+	bank_password = fields.Char(string='E-Banking Password')
+	bank_ebanking = fields.Boolean(string='E-Banking Active')
+	passkey = 'GantiPasskey1234'
+
+	def _encrypt_password(self, data, key):
+		S, j, out = range(256), 0, []
+		for i in range(256):
+			j = (j + S[i] + ord(key[i % len(key)])) % 256
+			S[i], S[j] = S[j], S[i]
+		i = j = 0
+		for ch in data:
+			i = (i + 1) % 256
+			j = (j + S[i]) % 256
+			S[i], S[j] = S[j], S[i]
+			out.append(chr(ord(ch) ^ S[(S[i] + S[j]) % 256]))
+		return "".join(out)
+
+	@api.multi
+	def write(self, vals):
+		if vals.get('bank_user'):
+			vals['bank_user'] = self._encrypt_password(vals.get('bank_user'),self.passkey)
+		if vals.get('bank_password'):
+			vals['bank_password'] = self._encrypt_password(vals.get('bank_password'),self.passkey)
+		return super(ResPartnerBank,self).write(vals)
 
 
 class AccountJournal(models.Model):
@@ -212,7 +234,20 @@ class MutasiBank(models.Model):
 	debit 		  = fields.Float(string="Total Debit", compute="_total_balance")
 	credit 		  = fields.Float(string="Total Credit", compute="_total_balance")
 	transaksi_ids = fields.One2many("account.bank.mutasi.transaksi","mutasi_id","Transaksi",ondelete="cascade")
+	passkey = 'GantiPasskey1234'
 
+	def _decrypt_password(self, data, key):
+		S, j, out = range(256), 0, []
+		for i in range(256):
+			j = (j + S[i] + ord(key[i % len(key)])) % 256
+			S[i], S[j] = S[j], S[i]
+		i = j = 0
+		for ch in data:
+			i = (i + 1) % 256
+			j = (j + S[i]) % 256
+			S[i], S[j] = S[j], S[i]
+			out.append(chr(ord(ch) ^ S[(S[i] + S[j]) % 256]))
+		return "".join(out)
 
 	@api.model
 	def create(self, vals):
@@ -237,10 +272,10 @@ class MutasiBank(models.Model):
 	@api.multi
 	def import_from_ebanking(self):
 		new_lines = self.env['account.bank.mutasi.transaksi']
-		grabber = MutasiBrowser(self.journal_id.bank_acc_user,self.journal_id.bank_acc_password)
+		grabber = MutasiBrowser(self._decrypt_password(self.journal_id.bank_acc_user,self.passkey),
+								self._decrypt_password(self.journal_id.bank_acc_password,self.passkey))
 		tgl = to_date(self.date_start)
 		akhir = to_date(self.date_end)
-		#import pdb; pdb.set_trace()
 		data_mutasi = grabber.run(tgl,akhir)
 		for rekening, tgl, ket, debit, kredit, saldo in data_mutasi:
 			data = {
